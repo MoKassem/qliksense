@@ -1,0 +1,51 @@
+apiVersion: qlik.com/v1
+kind: HelmValues
+metadata:
+  name: qliksense
+values:
+  ## Global configurations for the qliksense chart
+  global:
+    certs:
+      enabled: true
+      volume:
+        existingVolumeClaim: certs-pvc
+
+    persistence:
+      storageClass: "nfs-client"
+
+  subvalues:
+    edge-auth:
+      service:
+        type: ClusterIP
+      oidc:
+        ## Simple OIDC is disabled due allocated port conflicts with multiple qsefe builds
+        ## The Qliksense integration ci will brings its own simple oidc
+        enabled: false
+
+    elastic-infra:
+      nginx-ingress:
+        rbac:
+          create: true
+        controller:
+          service:
+            type: ClusterIP
+          extraArgs:
+            # The GENERATED_NAMESPACE env var here is parsed with envsubst at runtime
+            default-ssl-certificate: "$GENERATED_NAMESPACE/ci-certificate"
+
+    identity-providers:
+      secrets:
+        idpConfigs:
+          - discoveryUrl: "https://sut-nginx-ingress-controller/oidc/.well-known/openid-configuration"
+            clientId: "foo"
+            clientSecret: "bar"
+            realm: "simple"
+            hostname: "sut-nginx-ingress-controller"
+            claimsMapping:
+              sub: ["sub", "client_id"]
+              name: "name"
+
+    messaging:
+      nats-streaming:
+        readinessProbe:
+          initialDelaySeconds: 10
