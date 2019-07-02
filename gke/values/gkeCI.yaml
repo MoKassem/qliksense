@@ -31,7 +31,7 @@ values:
             type: ClusterIP
           extraArgs:
             # The GENERATED_NAMESPACE env var here is parsed with envsubst at runtime
-            default-ssl-certificate: "$GENERATED_NAMESPACE/ci-certificate"
+            default-ssl-certificate: "argoqliksense/ci-certificate"
 
     identity-providers:
       secrets:
