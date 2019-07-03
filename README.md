@@ -1,6 +1,6 @@
 Argo Image [![CircleCI](https://circleci.com/gh/qlik-oss/qliksense.svg?style=svg)](https://circleci.com/gh/qlik-oss/qliksense)
 
-# Qlik Sense Enterprise
+# Mokassem Qlik Sense Enterprise
 
 ## Installation of kustomize
 
